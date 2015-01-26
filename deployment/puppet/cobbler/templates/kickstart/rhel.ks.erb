@@ -9,7 +9,7 @@ url --url=$tree
 ## Expected repo_metadata format Name1=Value1,Name2=Value2
 #set repo_list = dict(item.split("=") for item in $repo_metadata.split(","))
 #for $repo_name, $repo_url in $repo_list.items()
-repo --name=$repo_name --baseurl=$repo_url
+repo --name=2014.2-6.0 --baseurl=http://10.20.0.2:8080/2014.2-6.0/redhat/x86_64
 #end for
 #else
 # ALTERNATIVE REPOSITORIES (PRESET)
