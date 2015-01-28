@@ -9,12 +9,8 @@ syslog
 <% end -%>
 [mysqld]
 innodb_file_per_table=1
-<% if @operatingsystem != 'RedHat' %>
 table_open_cache=<%= @table_open_cache %>
 innodb_file_format=Barracuda
-<% else %>
-table_cache=<%= @table_open_cache %>
-<% end %>
 user    = mysql
 #pid-file  = <%= @pidfile %>
 socket    = <%= @socket %>
