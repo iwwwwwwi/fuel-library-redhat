@@ -8,7 +8,7 @@ class ceph (
                                                ['primary-ceph-mon', 'ceph-mon'],
                                                'name'),
       $mon_ip_addresses     = nodes_with_roles($::fuel_settings['nodes'],
-                                               ['primary-ph-mon', 'ceph-mon'],
+                                               ['primary-ceph-mon', 'ceph-mon'],
                                                'internal_address'),
       $osd_devices          = split($::osd_devices_list, ' '),
       $use_ssl              = false,
