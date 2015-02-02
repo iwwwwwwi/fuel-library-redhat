@@ -10,13 +10,19 @@ class ceph::mon (
     proto  => 'tcp',
     action => accept,
   }
-
+  if $::hostname == $::ceph::primary_mon {
+  exec {'ceph-deploy mon create':
+    command   => "ceph-deploy mon create-initial",
+    logoutput => true,
+    unless    => "ceph mon stat | grep ${::internal_address}",
+  }
+  } else {
   exec {'ceph-deploy mon create':
     command   => "ceph-deploy mon create ${::hostname}:${::internal_address}",
     logoutput => true,
     unless    => "ceph mon stat | grep ${::internal_address}",
   }
-
+  }
   exec {'Wait for Ceph quorum':
     # this can be replaced with "ceph mon status mon.$::host" for Dumpling
     command   => 'ps ax|grep -vq ceph-create-keys',

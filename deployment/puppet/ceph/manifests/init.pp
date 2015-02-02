@@ -5,10 +5,10 @@ class ceph (
       $cluster_node_address = $::ipaddress, #This should be the cluster service address
       $primary_mon          = $::hostname, #This should be the first controller
       $mon_hosts            = nodes_with_roles($::fuel_settings['nodes'],
-                                               ['primary-controller', 'controller', 'ceph-mon'],
+                                               ['primary-ceph-mon', 'ceph-mon'],
                                                'name'),
       $mon_ip_addresses     = nodes_with_roles($::fuel_settings['nodes'],
-                                               ['primary-controller', 'controller', 'ceph-mon'],
+                                               ['primary-ph-mon', 'ceph-mon'],
                                                'internal_address'),
       $osd_devices          = split($::osd_devices_list, ' '),
       $use_ssl              = false,
@@ -89,7 +89,8 @@ class ceph (
     Class[['ceph::ssh', 'ceph::params']] -> Class['ceph::conf']
   }
 
-  if $::fuel_settings['role'] =~ /controller|ceph/ {
+#  if $::fuel_settings['role'] =~ /controller|ceph/ {
+  if $::fuel_settings['role'] =~ /ceph/ {
     service {'ceph':
       ensure  => 'running',
       enable  => true,
@@ -102,7 +103,8 @@ class ceph (
   }
 
   case $::fuel_settings['role'] {
-    'primary-controller', 'controller', 'ceph-mon': {
+#    'primary-controller', 'controller', 'ceph-mon': {
+    'primary-ceph-mon', 'ceph-mon': {
       include ceph::mon
 
       # DO NOT SPLIT ceph auth command lines! See http://tracker.ceph.com/issues/3279

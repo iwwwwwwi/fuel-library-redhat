@@ -145,6 +145,7 @@ class osnailyfacter::cluster_ha {
 
   # get cidr netmasks for VIPs
   $primary_controller_nodes = filter_nodes($nodes_hash,'role','primary-controller')
+  $primary_ceph_mon_nodes = filter_nodes($nodes_hash,'role','primary-ceph-mon')
   $vip_management_cidr_netmask = netmask_to_cidr($primary_controller_nodes[0]['internal_netmask'])
   $vip_public_cidr_netmask = netmask_to_cidr($primary_controller_nodes[0]['public_netmask'])
 
@@ -205,12 +206,18 @@ class osnailyfacter::cluster_ha {
 
 
   ##TODO: simply parse nodes array
+  $ceph_mons = concat($primary_ceph_mon_nodes, filter_nodes($nodes_hash,'role','ceph-mon'))
   $controllers = concat($primary_controller_nodes, filter_nodes($nodes_hash,'role','controller'))
   $controller_internal_addresses = nodes_to_hash($controllers,'name','internal_address')
+  $ceph_mon_internal_addresses = nodes_to_hash($ceph_mons,'name','internal_address')
   $controller_public_addresses = nodes_to_hash($controllers,'name','public_address')
+  $ceph_mon_public_addresses = nodes_to_hash($ceph_mons,'name','public_address')
   $controller_storage_addresses = nodes_to_hash($controllers,'name','storage_address')
+  $ceph_mon_storage_addresses = nodes_to_hash($ceph_mons,'name','storage_address')
   $controller_hostnames = keys($controller_internal_addresses)
+  $ceph_mon_hostnames = keys($ceph_mon_internal_addresses)
   $controller_nodes = ipsort(values($controller_internal_addresses))
+  $ceph_mon_nodes = ipsort(values($ceph_mon_internal_addresses))
   $controller_node_public  = $::fuel_settings['public_vip']
   $controller_node_address = $::fuel_settings['management_vip']
   $roles = node_roles($nodes_hash, $::fuel_settings['uid'])
@@ -267,8 +274,10 @@ class osnailyfacter::cluster_ha {
   }
 
   if ($::use_ceph) {
-    $primary_mons   = $controllers
-    $primary_mon    = $controllers[0]['name']
+    #$primary_mons   = $controllers
+    $primary_mons   = $ceph_mons
+    #$primary_mon    = $controllers[0]['name']
+    $primary_mon    = $ceph_mons[0]['name']
 
     if ($::use_neutron) {
       $ceph_cluster_network = get_network_role_property('storage', 'cidr')
