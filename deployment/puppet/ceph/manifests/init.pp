@@ -8,7 +8,7 @@ class ceph (
                                                ['primary-ceph-mon', 'ceph-mon'],
                                                'name'),
       $mon_ip_addresses     = nodes_with_roles($::fuel_settings['nodes'],
-                                               ['primary-ph-mon', 'ceph-mon'],
+                                               ['primary-ceph-mon', 'ceph-mon'],
                                                'internal_address'),
       $osd_devices          = split($::osd_devices_list, ' '),
       $use_ssl              = false,
@@ -106,6 +106,15 @@ class ceph (
 #    'primary-controller', 'controller', 'ceph-mon': {
     'primary-ceph-mon', 'ceph-mon': {
       include ceph::mon
+    group { 'glance':
+      ensure  => present,
+      system  => true,
+    } ->
+    user { 'glance':
+      ensure  => 'present',
+      gid     => 'glance',
+      system  => true,
+    } ->
 
       # DO NOT SPLIT ceph auth command lines! See http://tracker.ceph.com/issues/3279
       ceph::pool {$glance_pool:
@@ -114,6 +123,15 @@ class ceph (
         keyring_owner => 'glance',
       }
 
+    group { 'cinder':
+      ensure  => present,
+      system  => true,
+    } ->
+    user { 'cinder':
+      ensure  => 'present',
+      gid     => 'cinder',
+      system  => true,
+    } ->
       ceph::pool {$cinder_pool:
         user          => $cinder_user,
         acl           => "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=${cinder_pool}, allow rx pool=${glance_pool}'",
