@@ -105,16 +105,30 @@ class ceph (
   case $::fuel_settings['role'] {
 #    'primary-controller', 'controller', 'ceph-mon': {
     'primary-ceph-mon', 'ceph-mon': {
-      include ceph::mon
-    group { 'glance':
-      ensure  => present,
-      system  => true,
-    } ->
-    user { 'glance':
-      ensure  => 'present',
-      gid     => 'glance',
-      system  => true,
-    } ->
+     include ceph::mon
+     group { 'glance':
+       ensure  => present,
+       system  => true,
+     } ->
+     user { 'glance':
+       ensure  => 'present',
+       gid     => 'glance',
+       system  => true,
+     }
+     group { 'cinder':
+       ensure  => present,
+       system  => true,
+     } ->
+     user { 'cinder':
+       ensure  => 'present',
+       gid     => 'cinder',
+       system  => true,
+     }
+      Class['ceph::conf'] -> Class['ceph::mon'] ->
+      Service['ceph']
+    }
+    'primary-controller', 'controller': {
+#      include ceph::mon
 
       # DO NOT SPLIT ceph auth command lines! See http://tracker.ceph.com/issues/3279
       ceph::pool {$glance_pool:
@@ -123,28 +137,21 @@ class ceph (
         keyring_owner => 'glance',
       }
 
-    group { 'cinder':
-      ensure  => present,
-      system  => true,
-    } ->
-    user { 'cinder':
-      ensure  => 'present',
-      gid     => 'cinder',
-      system  => true,
-    } ->
       ceph::pool {$cinder_pool:
         user          => $cinder_user,
         acl           => "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=${cinder_pool}, allow rx pool=${glance_pool}'",
         keyring_owner => 'cinder',
       }
 
-      Class['ceph::conf'] -> Class['ceph::mon'] ->
-      Ceph::Pool[$glance_pool] -> Ceph::Pool[$cinder_pool] ->
-      Service['ceph']
+#      Class['ceph::conf'] -> Class['ceph::mon'] ->
+      Class['ceph::conf'] ->
+#      Ceph::Pool[$glance_pool] -> Ceph::Pool[$cinder_pool] ->
+      Ceph::Pool[$glance_pool] -> Ceph::Pool[$cinder_pool]
+#      Service['ceph']
 
       if ($::ceph::use_rgw) {
         include ceph::radosgw
-        Class['ceph::mon'] ->
+#        Class['ceph::mon'] ->
         Class['ceph::radosgw'] ~>
         Service['ceph']
 
