@@ -36,6 +36,7 @@ class cobbler::snippets {
   cobbler_snippet {"pre_install_partition": }
   cobbler_snippet {"pre_install_partition_lvm": }
   cobbler_snippet {"nailgun_repo": }
+  cobbler_snippet {"nailgun_repo_redhat": }
   cobbler_snippet {"ssh_disable_gssapi": }
   cobbler_snippet {"sshd_auth_pubkey_only": }
   cobbler_snippet {"disable_pxe":}
