@@ -7,15 +7,14 @@ cat > /etc/yum.repos.d/nailgun.repo << EOF
 #for $repo_name, $repo_url in $nailgun_repo_list.items()
 [$repo_name]
 name=$repo_name
-baseurl=$repo_url
-baseurl.sub!('centos','redhat')
+#set new_repo_url = $repo_url.replace('centos', 'redhat')
+baseurl=$new_repo_url
 gpgcheck=0
 #end for
 #else
 <% @ks_repo.each do |repo| %>
 [<%= repo['id'] %>]
 name=<%= repo['name'] %>
-repo['url'].sub!('centos','redhat')
 baseurl=<%= repo['url'] %>
 gpgcheck=0
 <% end %>
