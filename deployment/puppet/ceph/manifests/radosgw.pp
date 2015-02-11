@@ -50,7 +50,7 @@ class ceph::radosgw (
     ensure  => 'installed',
   }
 
-  if !(defined('horizon') or
+  if !(defined(Class['horizon']) or
        defined($::ceph::params::package_httpd) or
        defined($::ceph::params::service_httpd) ) {
     package {$::ceph::params::package_httpd:
@@ -130,7 +130,7 @@ class ceph::radosgw (
 
     } #END rgw_use_pki
 
-  class {'ceph::keystone': }
+ # class {'ceph::keystone': }
 
   } #END rgw_use_keystone
 

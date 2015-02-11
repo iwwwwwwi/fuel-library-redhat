@@ -84,6 +84,9 @@ class openstack::keystone (
   $ceilometer_public_address   = false,
   $ceilometer_internal_address = false,
   $ceilometer_admin_address    = false,
+  $radosgw_public_address      = false,
+  $radosgw_internal_address    = false,
+  $radosgw_admin_address       = false,
   $glance                      = true,
   $nova                        = true,
   $cinder                      = true,
@@ -197,6 +200,23 @@ class openstack::keystone (
   } else {
     $ceilometer_admin_real = $admin_real
   }
+
+  if($radosgw_public_address) {
+    $radosgw_public_real = $radosgw_public_address
+  } else {
+    $radosgw_public_real = $public_address
+  }
+  if($radosgw_internal_address) {
+    $radosgw_internal_real = $radosgw_internal_address
+  } else {
+    $radosgw_internal_real = $internal_real
+  }
+  if($radosgw_admin_address) {
+    $radosgw_admin_real = $radosgw_admin_address
+  } else {
+    $radosgw_admin_real = $admin_real
+  }
+
   if($ceilometer) {
     $notification_driver = 'messaging'
     $notification_topics = 'notifications'
@@ -376,6 +396,15 @@ class openstack::keystone (
         internal_address => $ceilometer_internal_real,
       }
       Exec <| title == 'keystone-manage db_sync' |> -> Class['ceilometer::keystone::auth']
+    }
+    $use_radosgw = $::fuel_settings['storage']['objects_ceph']
+    if $use_radosgw {
+      class { 'ceph::keystone' :
+        pub_ip => $radosgw_public_real,
+        adm_ip => $radosgw_admin_real,
+        int_ip => $radosgw_internal_real,
+        swift_endpoint_port => '8080',
+      }
     }
   }
 

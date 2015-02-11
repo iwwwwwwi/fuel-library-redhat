@@ -104,6 +104,7 @@ class ceph (
 
   case $::fuel_settings['role'] {
 #    'primary-controller', 'controller', 'ceph-mon': {
+
     'primary-ceph-mon', 'ceph-mon': {
      include ceph::mon
      group { 'glance':
@@ -126,7 +127,18 @@ class ceph (
      }
       Class['ceph::conf'] -> Class['ceph::mon'] ->
       Service['ceph']
+
+      if ($::ceph::use_rgw) {
+        include ceph::radosgw
+#        Class['ceph::mon'] ->
+        Class['ceph::radosgw'] ~>
+        Service['ceph']
+
+        Class['::ceph::mon'] -> Class['ceph::radosgw']
+      }
+
     }
+
     'primary-controller', 'controller': {
 #      include ceph::mon
 
@@ -148,15 +160,6 @@ class ceph (
 #      Ceph::Pool[$glance_pool] -> Ceph::Pool[$cinder_pool] ->
       Ceph::Pool[$glance_pool] -> Ceph::Pool[$cinder_pool]
 #      Service['ceph']
-
-      if ($::ceph::use_rgw) {
-        include ceph::radosgw
-#        Class['ceph::mon'] ->
-        Class['ceph::radosgw'] ~>
-        Service['ceph']
-
-        Class['::keystone'] -> Class['ceph::radosgw']
-      }
     }
 
     'ceph-osd': {
