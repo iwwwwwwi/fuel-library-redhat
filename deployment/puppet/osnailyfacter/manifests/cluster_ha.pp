@@ -99,17 +99,17 @@ class osnailyfacter::cluster_ha {
     $vcenter_hash = {}
   }
 
-#  if $primary_controller {
-#    if ($::mellanox_mode == 'ethernet') {
-#      $test_vm_pkg = 'cirros-testvm-mellanox'
-#    } else {
-#      $test_vm_pkg = 'cirros-testvm'
-#    }
-#    package { 'cirros-testvm' :
-#      ensure => 'installed',
-#      name   => $test_vm_pkg,
-#    }
-#  }
+  if $primary_controller {
+    if ($::mellanox_mode == 'ethernet') {
+      $test_vm_pkg = 'cirros-testvm-mellanox'
+    } else {
+      $test_vm_pkg = 'cirros-testvm'
+    }
+    package { 'cirros-testvm' :
+      ensure => 'installed',
+      name   => $test_vm_pkg,
+    }
+  }
 
   $storage_hash         = $::fuel_settings['storage']
   $nova_hash            = $::fuel_settings['nova']
