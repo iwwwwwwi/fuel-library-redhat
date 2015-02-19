@@ -4,6 +4,7 @@ require 'puppet/parser'
 require 'puppet/parser/templatewrapper'
 require 'puppet/resource/type_collection_helper'
 require 'puppet/util/methodhelper'
+require 'json'
 
 begin
   require 'puppet/parser/functions/lib/l23network_scheme.rb'
@@ -203,11 +204,19 @@ Puppet::Parser::Functions::newfunction(:generate_network_config, :type => :rvalu
           ifconfig_order.insert(-1, t[:name].to_sym())
         end
       elsif action == :bond
-        t[:provider] ||= 'ovs'  # default provider for Bond
+        t[:provider] ||= 'lnx'  # default provider for Bond
         if ! t[:interfaces].is_a? Array
           raise(Puppet::ParseError, "generate_network_config(): 'add-bond' resource should has non-empty 'interfaces' list.")
         end
+        bond_mode = 0
+        if t[:properties].include? 'bond_mode=balance-tcp'
+          bond_mode = 4
+        end
+        if t[:properties].include? 'bond_mode=active-backup'
+          bond_mode = 1
+        end
         if t[:provider] == 'lnx'
+	  t[:properties] = {:mode => bond_mode, :miimon => 100}
           if ! t[:properties].is_a? Hash
             raise(Puppet::ParseError, "generate_network_config(): 'add-bond' resource should has 'properties' hash for '#{t[:provider]}' provider.")
           else
