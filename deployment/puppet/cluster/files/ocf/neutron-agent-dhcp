@@ -457,7 +457,8 @@ neutron_dhcp_agent_start() {
 
     if ! ocf_is_true "$OCF_RESKEY_multiple_agents" ; then
         # detach deffered rescheduling procedure
-        RESCHEDULING_CMD="q-agent-cleanup.py --agent=dhcp --reschedule --remove-dead ${AUTH_TAIL} 2>&1 >> /var/log/neutron/rescheduling.log"
+        #RESCHEDULING_CMD="q-agent-cleanup.py --agent=dhcp --reschedule --remove-dead ${AUTH_TAIL} 2>&1 >> /var/log/neutron/rescheduling.log"
+        RESCHEDULING_CMD="q-agent-cleanup.py --agent=dhcp --reschedule --remove-dead 2>&1 >> /var/log/neutron/rescheduling.log"
         RESCH_CMD=''
         for ((i=0; i<$OCF_RESKEY_rescheduling_tries; i++)) ; do
             RESCH_CMD="$RESCH_CMD sleep $OCF_RESKEY_rescheduling_interval ; $RESCHEDULING_CMD ;"
@@ -541,7 +542,8 @@ neutron_dhcp_agent_stop() {
     q-agent-cleanup.py --agent=dhcp --cleanup-ports
     clean_up_namespaces
     if ! ocf_is_true "$OCF_RESKEY_multiple_agents" ; then
-        q-agent-cleanup.py --agent=dhcp --remove-self ${AUTH_TAIL} 2>&1 >> /var/log/neutron/rescheduling.log &
+        #q-agent-cleanup.py --agent=dhcp --remove-self ${AUTH_TAIL} 2>&1 >> /var/log/neutron/rescheduling.log &
+        q-agent-cleanup.py --agent=dhcp --remove-self 2>&1 >> /var/log/neutron/rescheduling.log &
     fi
     sleep 3
 
