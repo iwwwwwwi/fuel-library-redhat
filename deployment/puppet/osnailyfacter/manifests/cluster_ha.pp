@@ -280,11 +280,11 @@ class osnailyfacter::cluster_ha {
     $primary_mon    = $ceph_mons[0]['name']
 
     if ($::use_neutron) {
-      $ceph_cluster_network = get_network_role_property('storage', 'cidr')
-      $ceph_public_network  = get_network_role_property('management', 'cidr')
+      $ceph_cluster_network = get_network_role_property('management', 'cidr')
+      $ceph_public_network  = get_network_role_property('storage', 'cidr')
     } else {
-      $ceph_cluster_network = $::fuel_settings['storage_network_range']
-      $ceph_public_network = $::fuel_settings['management_network_range']
+      $ceph_cluster_network = $::fuel_settings['management_network_range']
+      $ceph_public_network = $::fuel_settings['storage_network_range']
     }
 
     class {'ceph':
@@ -379,8 +379,7 @@ class osnailyfacter::cluster_ha {
       keystone_admin_token           => $::osnailyfacter::cluster_ha::keystone_hash[admin_token],
       keystone_admin_tenant          => $::osnailyfacter::cluster_ha::access_hash[tenant],
       glance_db_password             => $::osnailyfacter::cluster_ha::glance_hash[db_password],
-      #glance_user_password           => $::osnailyfacter::cluster_ha::glance_hash[user_password],
-      glance_user_password           => $::osnailyfacter::cluster_ha::users_hash[glance_password],
+      glance_user_password           => $::osnailyfacter::cluster_ha::glance_hash[user_password],
       glance_image_cache_max_size    => $::osnailyfacter::cluster_ha::glance_hash[image_cache_max_size],
       known_stores                   => $::osnailyfacter::cluster_ha::glance_known_stores,
       glance_vcenter_host            => $::osnailyfacter::cluster_ha::storage_hash['vc_host'],
@@ -390,8 +389,7 @@ class osnailyfacter::cluster_ha {
       glance_vcenter_datastore       => $::osnailyfacter::cluster_ha::storage_hash['vc_datastore'],
       glance_vcenter_image_dir       => $::osnailyfacter::cluster_ha::storage_hash['vc_image_dir'],
       nova_db_password               => $::osnailyfacter::cluster_ha::nova_hash[db_password],
-      #nova_user_password             => $::osnailyfacter::cluster_ha::nova_hash[user_password],
-      nova_user_password             => $::osnailyfacter::cluster_ha::users_hash[nova_password],
+      nova_user_password             => $::osnailyfacter::cluster_ha::nova_hash[user_password],
       queue_provider                 => $::queue_provider,
       amqp_hosts                     => $::osnailyfacter::cluster_ha::amqp_hosts,
       amqp_user                      => $::osnailyfacter::cluster_ha::rabbit_hash['user'],
@@ -409,23 +407,20 @@ class osnailyfacter::cluster_ha {
 
       network_provider               => $::osnailyfacter::cluster_ha::network_provider,
       neutron_db_password            => $::osnailyfacter::cluster_ha::neutron_db_password,
-      #neutron_user_password          => $::osnailyfacter::cluster_ha::neutron_user_password,
-      neutron_user_password          => $::osnailyfacter::cluster_ha::users_hash['neutron_password'],
+      neutron_user_password          => $::osnailyfacter::cluster_ha::neutron_user_password,
       neutron_metadata_proxy_secret  => $::osnailyfacter::cluster_ha::neutron_metadata_proxy_secret,
       neutron_ha_agents              => $::osnailyfacter::cluster_ha::primary_controller ? {true => 'primary', default => 'slave'},
       base_mac                       => $::osnailyfacter::cluster_ha::base_mac,
 
       cinder                         => true,
-      #cinder_user_password           => $::osnailyfacter::cluster_ha::cinder_hash[user_password],
-      cinder_user_password           => $::osnailyfacter::cluster_ha::users_hash[cinder_password],
+      cinder_user_password           => $::osnailyfacter::cluster_ha::cinder_hash[user_password],
       cinder_iscsi_bind_addr         => $::osnailyfacter::cluster_ha::cinder_iscsi_bind_addr,
       cinder_db_password             => $::osnailyfacter::cluster_ha::cinder_hash[db_password],
       cinder_volume_group            => "cinder",
       manage_volumes                 => $::osnailyfacter::cluster_ha::manage_volumes,
       ceilometer                     => $::osnailyfacter::cluster_ha::ceilometer_hash[enabled],
       ceilometer_db_password         => $::osnailyfacter::cluster_ha::ceilometer_hash[db_password],
-      #ceilometer_user_password       => $::osnailyfacter::cluster_ha::ceilometer_hash[user_password],
-      ceilometer_user_password       => $::osnailyfacter::cluster_ha::users_hash[ceilometer_password],
+      ceilometer_user_password       => $::osnailyfacter::cluster_ha::ceilometer_hash[user_password],
       ceilometer_metering_secret     => $::osnailyfacter::cluster_ha::ceilometer_hash[metering_secret],
       ceilometer_db_type             => 'mongodb',
       ceilometer_db_host             => mongo_hosts($nodes_hash),
@@ -697,10 +692,8 @@ class osnailyfacter::cluster_ha {
         external_ip            => $controller_node_public,
 
         keystone_host     => $controller_node_address,
-        #keystone_user     => 'heat',
-        #keystone_password =>  $heat_hash['user_password'],
-        keystone_user     => $::fuel_settings['users']['heat'],
-        keystone_password => $::osnailyfacter::cluster_ha::users_hash['heat_password'],
+        keystone_user     => 'heat',
+        keystone_password =>  $heat_hash['user_password'],
         keystone_tenant   => 'services',
 
         keystone_ec2_uri  => "http://${controller_node_address}:5000/v2.0",
@@ -774,10 +767,8 @@ class osnailyfacter::cluster_ha {
           murano_db_password       => $murano_hash['db_password'],
 
           murano_keystone_host     => $::fuel_settings['management_vip'],
-          #murano_keystone_user     => 'murano',
-          #murano_keystone_password => $murano_hash['user_password'],
-          murano_keystone_user     => $::fuel_settings['users']['murano'],
-          murano_keystone_password => $::osnailyfacter::cluster_ha::users_hash[murano_password],
+          murano_keystone_user     => 'murano',
+          murano_keystone_password => $murano_hash['user_password'],
           murano_keystone_tenant   => 'services',
 
           use_neutron              => $::use_neutron,

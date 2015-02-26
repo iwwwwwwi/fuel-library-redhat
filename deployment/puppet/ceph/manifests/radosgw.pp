@@ -206,6 +206,13 @@ class ceph::radosgw (
 
   file { $keyring_path: mode => '0640', }
 
+  service { 'radosgw':
+    ensure  => 'stopped',
+    name    => $::ceph::params::service_radosgw,
+    enable  => true,
+    require => Package[$::ceph::params::package_radosgw],
+  }
+
   Ceph_conf <||> ->
   Package[$::ceph::params::package_httpd] ->
   Package[[$::ceph::params::package_radosgw,

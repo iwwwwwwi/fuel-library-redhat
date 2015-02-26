@@ -353,7 +353,6 @@ class openstack::keystone (
         public_address   => $glance_public_real,
         admin_address    => $glance_admin_real,
         internal_address => $glance_internal_real,
-	auth_name        => $::fuel_settings['users']['glance']
       }
       Exec <| title == 'keystone-manage db_sync' |> -> Class['glance::keystone::auth']
     }
@@ -366,7 +365,6 @@ class openstack::keystone (
         admin_address    => $nova_admin_real,
         internal_address => $nova_internal_real,
         cinder            => $cinder,
-	auth_name        => $::fuel_settings['users']['nova']
       }
       Exec <| title == 'keystone-manage db_sync' |> -> Class['nova::keystone::auth']
     }
@@ -378,7 +376,6 @@ class openstack::keystone (
         public_address   => $cinder_public_real,
         admin_address    => $cinder_admin_real,
         internal_address => $cinder_internal_real,
-	auth_name        => $::fuel_settings['users']['cinder']
       }
      Exec <| title == 'keystone-manage db_sync' |> -> Class['cinder::keystone::auth']
     }
@@ -388,7 +385,6 @@ class openstack::keystone (
         public_address   => $neutron_public_real,
         admin_address    => $neutron_admin_real,
         internal_address => $neutron_internal_real,
-	auth_name        => $::fuel_settings['users']['neutron']
       }
       Exec <| title == 'keystone-manage db_sync' |> -> Class['neutron::keystone::auth']
     }
@@ -398,7 +394,6 @@ class openstack::keystone (
         public_address   => $ceilometer_public_real,
         admin_address    => $ceilometer_admin_real,
         internal_address => $ceilometer_internal_real,
-	auth_name        => $::fuel_settings['users']['ceilometer']
       }
       Exec <| title == 'keystone-manage db_sync' |> -> Class['ceilometer::keystone::auth']
     }

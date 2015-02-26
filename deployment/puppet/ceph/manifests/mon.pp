@@ -14,13 +14,13 @@ class ceph::mon (
   exec {'ceph-deploy mon create':
     command   => "ceph-deploy mon create-initial",
     logoutput => true,
-    unless    => "ceph mon stat | grep ${::internal_address}",
+    unless    => "ceph mon stat | grep ${::storage_address}",
   }
   } else {
   exec {'ceph-deploy mon create':
-    command   => "ceph-deploy mon create ${::hostname}:${::internal_address}",
+    command   => "ceph-deploy mon create ${::hostname}:${::storage_address}",
     logoutput => true,
-    unless    => "ceph mon stat | grep ${::internal_address}",
+    unless    => "ceph mon stat | grep ${::storage_address}",
   }
   }
   exec {'Wait for Ceph quorum':
