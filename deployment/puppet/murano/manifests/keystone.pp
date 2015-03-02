@@ -2,7 +2,7 @@ class murano::keystone (
   $user             = 'murano',
   $password         = 'swordfish',
   $tenant           = 'services',
-  $email            = 'murano@localhost',
+  $email            = "${user}@localhost",
   $public_address   = '127.0.0.1',
   $admin_address    = '127.0.0.1',
   $internal_address = '127.0.0.1',

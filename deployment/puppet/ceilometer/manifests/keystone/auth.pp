@@ -69,7 +69,7 @@
 #
 class ceilometer::keystone::auth (
   $password           = false,
-  $email              = 'ceilometer@localhost',
+  $email              = "${auth_name}@localhost",
   $auth_name          = 'ceilometer',
   $service_type       = 'metering',
   $public_address     = '127.0.0.1',

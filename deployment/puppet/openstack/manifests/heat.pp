@@ -10,8 +10,10 @@ class openstack::heat (
   $keystone_service_port         = '5000',
   $keystone_protocol             = 'http',
   $keystone_user                 = 'heat',
+  $keystone_user_cfn,
   $keystone_tenant               = 'services',
   $keystone_password             = false,
+  $keystone_password_cfn,
   $keystone_ec2_uri              = false,
   $auth_uri                      = false,
 
@@ -146,8 +148,8 @@ class openstack::heat (
   }
   #TODO(bogdando) clarify this new to Fuel Heat auth cfn patterns
   class { 'heat::keystone::auth_cfn' :
-    password                       => $keystone_password,
-    auth_name                      => "${keystone_user}-cfn",
+    password                       => $keystone_password_cfn,
+    auth_name                      => $keystone_user_cfn,
     service_type                   => 'cloudformation',
     public_address                 => $external_ip,
     admin_address                  => $keystone_host,
@@ -156,7 +158,7 @@ class openstack::heat (
     version                        => 'v1',
     region                         => 'RegionOne',
     tenant                         => 'services',
-    email                          => "${keystone_user}-cfn@localhost",
+    email                          => "${keystone_user_cfn}@localhost",
     public_protocol                => 'http',
     admin_protocol                 => 'http',
     internal_protocol              => 'http',

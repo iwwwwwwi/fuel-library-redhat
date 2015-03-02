@@ -55,7 +55,7 @@
 class neutron::keystone::auth (
   $password,
   $auth_name          = 'neutron',
-  $email              = 'neutron@localhost',
+  $email              = "${auth_name}@localhost",
   $tenant             = 'services',
   $configure_endpoint = true,
   $service_name       = undef,

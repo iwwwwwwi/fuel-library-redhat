@@ -19,7 +19,7 @@
 #
 class glance::keystone::auth(
   $password,
-  $email              = 'glance@localhost',
+  $email              = "${auth_name}@localhost",
   $auth_name          = 'glance',
   $configure_endpoint = true,
   $service_type       = 'image',

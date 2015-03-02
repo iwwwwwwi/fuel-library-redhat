@@ -80,7 +80,7 @@ class nova::keystone::auth(
   $compute_version        = 'v2',
   $region                 = 'RegionOne',
   $tenant                 = 'services',
-  $email                  = 'nova@localhost',
+  $email                  = "${auth_name}@localhost",
   $configure_ec2_endpoint = true,
   $cinder                 = undef,
   $public_protocol        = 'http',

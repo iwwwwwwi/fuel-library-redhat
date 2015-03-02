@@ -5,6 +5,7 @@
 
 class openstack::cinder(
   $sql_connection,
+  $cinder_user,
   $cinder_user_password,
   $glance_api_servers,
   $queue_provider         = 'rabbitmq',
@@ -34,7 +35,6 @@ class openstack::cinder(
   $keystone_tenant        = 'services',
   $keystone_auth_port     = '35357',
   $keystone_auth_protocol = 'http',
-  $keystone_user          = 'cinder',
   $ceilometer             = false,
   $vmware_host_ip         = '10.10.10.10',
   $vmware_host_username   = 'administrator@vsphere.local',
@@ -120,6 +120,7 @@ class openstack::cinder(
       keystone_enabled   => $keystone_enabled,
       package_ensure     => $::openstack_version['cinder'],
       keystone_auth_host => $auth_host,
+      keystone_user      => $cinder_user,
       keystone_password  => $cinder_user_password,
       bind_host          => $bind_host,
       ratelimits         => $cinder_rate_limits
@@ -191,7 +192,7 @@ class openstack::cinder(
       'keystone_authtoken/auth_host':         value => $auth_host;
       'keystone_authtoken/auth_port':         value => $keystone_auth_port;
       'keystone_authtoken/admin_tenant_name': value => $keystone_tenant;
-      'keystone_authtoken/admin_user':        value => $keystone_user;
+      'keystone_authtoken/admin_user':        value => $cinder_user;
       'keystone_authtoken/admin_password':    value => $cinder_user_password;
       'keystone_authtoken/signing_dir':       value => '/tmp/keystone-signing-cinder';
       'keystone_authtoken/signing_dirname':   value => '/tmp/keystone-signing-cinder';

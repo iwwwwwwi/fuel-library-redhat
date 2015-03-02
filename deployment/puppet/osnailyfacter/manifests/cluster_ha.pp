@@ -34,7 +34,8 @@ class osnailyfacter::cluster_ha {
     $neutron_config            = $::fuel_settings['quantum_settings']
     $network_provider          = 'neutron'
     $neutron_db_password       = $neutron_config['database']['passwd']
-    $neutron_user_password     = $neutron_config['keystone']['admin_password']
+    $neutron_user              = $::fuel_settings['users']['neutron']
+    $neutron_user_password     = $::fuel_settings['users']['neutron_password']
     $neutron_metadata_proxy_secret = $neutron_config['metadata']['metadata_proxy_shared_secret']
     $base_mac                  = $neutron_config['L2']['base_mac']
     if $::fuel_settings['nsx_plugin']['metadata']['enabled'] {
@@ -122,6 +123,7 @@ class osnailyfacter::cluster_ha {
   $access_hash          = $::fuel_settings['access']
   $nodes_hash           = $::fuel_settings['nodes']
   $mp_hash              = $::fuel_settings['mp']
+  $users_hash           = $::fuel_settings['users']
   $network_manager      = "nova.network.manager.${novanetwork_params['network_manager']}"
 
   if !$rabbit_hash['user'] {
@@ -379,7 +381,8 @@ class osnailyfacter::cluster_ha {
       keystone_admin_token           => $::osnailyfacter::cluster_ha::keystone_hash[admin_token],
       keystone_admin_tenant          => $::osnailyfacter::cluster_ha::access_hash[tenant],
       glance_db_password             => $::osnailyfacter::cluster_ha::glance_hash[db_password],
-      glance_user_password           => $::osnailyfacter::cluster_ha::glance_hash[user_password],
+      glance_user                    => $::osnailyfacter::cluster_ha::users_hash[glance],
+      glance_user_password           => $::osnailyfacter::cluster_ha::users_hash[glance_password],
       glance_image_cache_max_size    => $::osnailyfacter::cluster_ha::glance_hash[image_cache_max_size],
       known_stores                   => $::osnailyfacter::cluster_ha::glance_known_stores,
       glance_vcenter_host            => $::osnailyfacter::cluster_ha::storage_hash['vc_host'],
@@ -389,7 +392,8 @@ class osnailyfacter::cluster_ha {
       glance_vcenter_datastore       => $::osnailyfacter::cluster_ha::storage_hash['vc_datastore'],
       glance_vcenter_image_dir       => $::osnailyfacter::cluster_ha::storage_hash['vc_image_dir'],
       nova_db_password               => $::osnailyfacter::cluster_ha::nova_hash[db_password],
-      nova_user_password             => $::osnailyfacter::cluster_ha::nova_hash[user_password],
+      nova_user                      => $::osnailyfacter::cluster_ha::users_hash[nova],
+      nova_user_password             => $::osnailyfacter::cluster_ha::users_hash[nova_password],
       queue_provider                 => $::queue_provider,
       amqp_hosts                     => $::osnailyfacter::cluster_ha::amqp_hosts,
       amqp_user                      => $::osnailyfacter::cluster_ha::rabbit_hash['user'],
@@ -407,20 +411,23 @@ class osnailyfacter::cluster_ha {
 
       network_provider               => $::osnailyfacter::cluster_ha::network_provider,
       neutron_db_password            => $::osnailyfacter::cluster_ha::neutron_db_password,
-      neutron_user_password          => $::osnailyfacter::cluster_ha::neutron_user_password,
+      neutron_user                   => $::osnailyfacter::cluster_ha::users_hash[neutron],
+      neutron_user_password          => $::osnailyfacter::cluster_ha::users_hash[neutron_password],
       neutron_metadata_proxy_secret  => $::osnailyfacter::cluster_ha::neutron_metadata_proxy_secret,
       neutron_ha_agents              => $::osnailyfacter::cluster_ha::primary_controller ? {true => 'primary', default => 'slave'},
       base_mac                       => $::osnailyfacter::cluster_ha::base_mac,
 
       cinder                         => true,
-      cinder_user_password           => $::osnailyfacter::cluster_ha::cinder_hash[user_password],
+      cinder_user                    => $::osnailyfacter::cluster_ha::users_hash[cinder],
+      cinder_user_password           => $::osnailyfacter::cluster_ha::users_hash[cinder_password],
       cinder_iscsi_bind_addr         => $::osnailyfacter::cluster_ha::cinder_iscsi_bind_addr,
       cinder_db_password             => $::osnailyfacter::cluster_ha::cinder_hash[db_password],
       cinder_volume_group            => "cinder",
       manage_volumes                 => $::osnailyfacter::cluster_ha::manage_volumes,
       ceilometer                     => $::osnailyfacter::cluster_ha::ceilometer_hash[enabled],
       ceilometer_db_password         => $::osnailyfacter::cluster_ha::ceilometer_hash[db_password],
-      ceilometer_user_password       => $::osnailyfacter::cluster_ha::ceilometer_hash[user_password],
+      ceilometer_user                => $::osnailyfacter::cluster_ha::users_hash[ceilometer],
+      ceilometer_user_password       => $::osnailyfacter::cluster_ha::users_hash[ceilometer_password],
       ceilometer_metering_secret     => $::osnailyfacter::cluster_ha::ceilometer_hash[metering_secret],
       ceilometer_db_type             => 'mongodb',
       ceilometer_db_host             => mongo_hosts($nodes_hash),
@@ -692,8 +699,10 @@ class osnailyfacter::cluster_ha {
         external_ip            => $controller_node_public,
 
         keystone_host     => $controller_node_address,
-        keystone_user     => 'heat',
-        keystone_password =>  $heat_hash['user_password'],
+        keystone_user     => $::osnailyfacter::cluster_ha::users_hash['heat'],
+        keystone_password => $::osnailyfacter::cluster_ha::users_hash['heat_password'],
+        keystone_user_cfn     => $::osnailyfacter::cluster_ha::users_hash['heat_cfn'],
+        keystone_password_cfn => $::osnailyfacter::cluster_ha::users_hash['heat_cfn_password'],
         keystone_tenant   => 'services',
 
         keystone_ec2_uri  => "http://${controller_node_address}:5000/v2.0",
@@ -767,8 +776,8 @@ class osnailyfacter::cluster_ha {
           murano_db_password       => $murano_hash['db_password'],
 
           murano_keystone_host     => $::fuel_settings['management_vip'],
-          murano_keystone_user     => 'murano',
-          murano_keystone_password => $murano_hash['user_password'],
+          murano_keystone_user     => $::osnailyfacter::cluster_ha::users_hash[murano],
+          murano_keystone_password => $::osnailyfacter::cluster_ha::users_hash[murano_password],
           murano_keystone_tenant   => 'services',
 
           use_neutron              => $::use_neutron,
@@ -848,19 +857,23 @@ class osnailyfacter::cluster_ha {
         cinder_volume_group         => "cinder",
         vnc_enabled                 => true,
         manage_volumes              => $manage_volumes,
-        nova_user_password          => $nova_hash[user_password],
+        nova_user                   => $::osnailyfacter::cluster_ha::users_hash[nova],
+        nova_user_password          => $::osnailyfacter::cluster_ha::users_hash[nova_password],
         cache_server_ip             => $controller_nodes,
         service_endpoint            => $::fuel_settings['management_vip'],
         cinder                      => true,
         cinder_iscsi_bind_addr      => $cinder_iscsi_bind_addr,
+        cinder_user                 => $::osnailyfacter::cluster_ha::users_hash[cinder],
         cinder_user_password        => $cinder_hash[user_password],
         cinder_db_password          => $cinder_hash[db_password],
         ceilometer                  => $ceilometer_hash[enabled],
         ceilometer_metering_secret  => $ceilometer_hash[metering_secret],
-        ceilometer_user_password    => $ceilometer_hash[user_password],
+        ceilometer_user             => $::osnailyfacter::cluster_ha::users_hash[ceilometer],
+        ceilometer_user_password    => $::osnailyfacter::cluster_ha::users_hash[ceilometer_password],
         db_host                     => $::fuel_settings['management_vip'],
 
         network_provider            => $::osnailyfacter::cluster_ha::network_provider,
+        neutron_user                => $::osnailyfacter::cluster_ha::neutron_user,
         neutron_user_password       => $::osnailyfacter::cluster_ha::neutron_user_password,
         base_mac                    => $::osnailyfacter::cluster_ha::base_mac,
 

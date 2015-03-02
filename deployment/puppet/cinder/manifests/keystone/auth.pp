@@ -63,7 +63,7 @@ class cinder::keystone::auth (
   $password,
   $auth_name             = 'cinder',
   $auth_name_v2          = 'cinderv2',
-  $email                 = 'cinder@localhost',
+  $email                 = "${auth_name}@localhost",
   $tenant                = 'services',
   $configure_endpoint    = true,
   $configure_endpoint_v2 = true,
