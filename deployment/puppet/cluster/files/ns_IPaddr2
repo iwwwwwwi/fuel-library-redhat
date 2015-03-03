@@ -491,6 +491,8 @@ ip_start() {
     rc=$OCF_ERR_GENERIC
   else
     iptables_start
+    ocf_run sysctl -w net.ipv4.conf.br-ex.rp_filter=2
+
   fi
   return $rc
 }
@@ -524,6 +526,7 @@ ip_stop() {
   if [[ $rc == 0 ]] ; then
     rc=$OCF_SUCCESS  # it means stop was success
     iptables_stop
+    ocf_run sysctl -w net.ipv4.conf.br-ex.rp_filter=1
   else
     rc=$OCF_ERR_GENERIC
   fi
