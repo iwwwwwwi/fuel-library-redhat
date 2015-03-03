@@ -8,7 +8,7 @@ class openstack::ha::radosgw (
     listen_port         => 8080,
     balancermember_port => 6780,
     server_names        => filter_hash($servers, 'name'),
-    ipaddresses         => filter_hash($servers, 'internal_address'),
+    ipaddresses         => filter_hash($servers, 'storage_address'),
     public              => true,
 
     haproxy_config_options => {

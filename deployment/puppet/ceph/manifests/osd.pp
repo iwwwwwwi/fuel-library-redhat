@@ -1,6 +1,8 @@
 # prepare and bring online the devices listed in $::ceph::osd_devices
 class ceph::osd (
   $devices = join(prefix($::ceph::osd_devices, "${::hostname}:"), ' '),
+  $replication_vlan = $::fuel_settings['storage']['replication_vlan'], 
+
 ){
   firewall {'011 ceph-osd allow':
     chain   => 'INPUT',
@@ -26,6 +28,12 @@ class ceph::osd (
     unless    => "grep -q '^${ $::ceph::osd_devices[0] }' /proc/mounts",
   }
 
+  $bridge = storage_bond('br-mgmt')
+  exec { 'vlan hook':
+  command => "/usr/bin/ovs-vsctl set port $bridge--br-mgmt tag=$replication_vlan"
+  }
+
   Firewall['011 ceph-osd allow'] ->
+  Exec['vlan hook'] ->
   Exec['ceph-deploy osd prepare']
 }
