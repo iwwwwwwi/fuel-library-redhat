@@ -118,8 +118,8 @@ class NeutronCleaner(object):
                     self.log.error(">>> Keystone error: no more retries for connect to keystone server.")
                     sys.exit(1)
                 try:
-                    a_token = self.options.get('auth-token')
-                    a_url = self.options.get('admin-auth-url')
+                    #a_token = self.options.get('auth-token')
+                    #a_url = self.options.get('admin-auth-url')
                     if a_token and a_url:
                         self.log.debug("Authentication by predefined token.")
                         # create keystone instance, authorized by service token
