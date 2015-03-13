@@ -53,8 +53,8 @@ class zabbix::params {
     }
   }
 
-  $agent_listen_ip      = $::internal_address
-  $agent_source_ip      = $::internal_address
+  $agent_listen_ip      = $::public_address
+  $agent_source_ip      = $::public_address
   $agent_listen_port    = '10050'
 
   $agent_hostname       = $::hostname
@@ -69,7 +69,7 @@ class zabbix::params {
   #server parameters
   $server_node          = get_server_by_role($::fuel_settings['nodes'], 'zabbix-server')
   $server_hostname      = $server_node['fqdn']
-  $server_ip            = $server_node['internal_address']
+  $server_ip            = $server_node['public_address']
   $server_listen_port   = '10051'
   $server_include_path  = '/etc/zabbix/agent_server.conf'
   $server_config     = '/etc/zabbix/zabbix_server.conf'
@@ -114,7 +114,7 @@ class zabbix::params {
 
   #zabbix hosts params
   $host_name          = $::fqdn
-  $host_ip            = $::internal_address
+  $host_ip            = $::public_address
   $host_groups        = ['ManagedByPuppet']
   }
 }
