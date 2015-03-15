@@ -115,6 +115,21 @@ class zabbix::params {
   #zabbix hosts params
   $host_name          = $::fqdn
   $host_ip            = $::public_address
-  $host_groups        = ['ManagedByPuppet']
+  $host_groups_all    = ['ManagedByPuppet','CephNodes','ComputeNodes','Fuel']
+
+  if $::fuel_settings['role'] =~ /ceph/ {
+      $host_groups        = ['ManagedByPuppet','CephNodes']
+    }
+    elsif $::fuel_settings['role'] =~ /compute/ {
+      $host_groups        = ['ManagedByPuppet','ComputeNodes']
+    }
+    # Fuel uses newer version of ruby which causes zabbix_host provider to fail if there is only one element of array.
+    elsif $::fuel_settings['role'] =~ /fuel/ {
+      $host_groups        = ['ManagedByPuppet','Fuel']
+    }
+    else {
+     $host_groups        = ['ManagedByPuppet']
+    }
+
   }
 }
