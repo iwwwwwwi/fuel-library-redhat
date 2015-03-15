@@ -2,7 +2,7 @@ class zabbix::server::config {
 
   include zabbix::params
 
-  zabbix_hostgroup { $zabbix::params::host_groups:
+  zabbix_hostgroup { $zabbix::params::host_groups_all:
     ensure => present,
     api    => $zabbix::params::api_hash,
   }
@@ -268,6 +268,28 @@ class zabbix::server::config {
   zabbix_configuration_import { 'Template_App_OpenStack_Ceilometer_Compute.xml Import':
     ensure   => present,
     xml_file => '/etc/zabbix/import/Template_App_OpenStack_Ceilometer_Compute.xml',
+    api => $zabbix::params::api_hash,
+  }
+  # Ceph
+  zabbix_configuration_import { 'Template_App_Ceph_Cluster.xml Import':
+    ensure   => present,
+    xml_file => '/etc/zabbix/import/Template_App_Ceph_Cluster.xml',
+    api => $zabbix::params::api_hash,
+  }
+  zabbix_configuration_import { 'Template_App_Ceph_MON.xml Import':
+    ensure   => present,
+    xml_file => '/etc/zabbix/import/Template_App_Ceph_MON.xml',
+    api => $zabbix::params::api_hash,
+  }
+  zabbix_configuration_import { 'Template_App_Ceph_OSD.xml Import':
+    ensure   => present,
+    xml_file => '/etc/zabbix/import/Template_App_Ceph_OSD.xml',
+    api => $zabbix::params::api_hash,
+  }
+  # Autoscale
+  zabbix_configuration_import { 'Template_Autoscale.xml Import':
+    ensure   => present,
+    xml_file => '/etc/zabbix/import/Template_Autoscale.xml',
     api => $zabbix::params::api_hash,
   }
 }

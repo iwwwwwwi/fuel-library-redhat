@@ -144,6 +144,7 @@ class openstack::network::neutron_agents (
       resync_interval => $resync_interval,
       use_namespaces  => $use_namespaces,
       manage_service  => true,
+      enable_isolated_metadata  => true,
       enabled         => true,
     }
     Service<| title == 'neutron-server' |> -> Service<| title == 'neutron-dhcp-service' |>

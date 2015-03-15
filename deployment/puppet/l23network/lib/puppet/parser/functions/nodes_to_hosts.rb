@@ -11,13 +11,13 @@ module Puppet::Parser::Functions
     hosts=Hash.new
     nodes=args[0]
     nodes.each do |node|
-    if node['role'] == 'ceph-osd' or node['role'] == 'ceph-mon' or node['role'] == 'primary-ceph-mon' 
-      address = 'storage_address' 
-     else 
-      address = 'internal_address' 
-     end 
-      hosts[node['fqdn']]={:ip=>node['internal_address'],:host_aliases=>[node['name']]}
-      notice("Generating host entry #{node['name']} #{node['internal_address']} #{node['fqdn']}")
+      if node['role'] == 'ceph-osd' or node['role'] == 'ceph-mon' or node['role'] == 'primary-ceph-mon'
+        address = 'storage_address'
+       else
+        address = 'internal_address'
+      end
+      hosts[node['fqdn']]={:ip=>node[address],:host_aliases=>[node['name']]}
+      notice("Generating host entry #{node['name']} #{node[address]} #{node['fqdn']}")
     end
     return hosts
   end

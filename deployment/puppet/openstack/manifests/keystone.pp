@@ -217,6 +217,8 @@ class openstack::keystone (
     $radosgw_admin_real = $admin_real
   }
 
+  class {'keystone::config::ldap': }
+
   if($ceilometer) {
     $notification_driver = 'messaging'
     $notification_topics = 'notifications'
@@ -297,7 +299,6 @@ class openstack::keystone (
     'DATABASE/max_pool_size':                          value => $max_pool_size;
     'DATABASE/max_retries':                            value => $max_retries;
     'DATABASE/max_overflow':                           value => $max_overflow;
-    'identity/driver':                                 value =>"keystone.identity.backends.sql.Identity";
     'policy/driver':                                   value =>"keystone.policy.backends.rules.Policy";
     'ec2/driver':                                      value =>"keystone.contrib.ec2.backends.sql.Ec2";
     'filter:debug/paste.filter_factory':               value =>"keystone.common.wsgi:Debug.factory";
