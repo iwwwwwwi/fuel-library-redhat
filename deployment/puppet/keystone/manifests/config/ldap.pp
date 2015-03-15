@@ -64,7 +64,7 @@ class keystone::config::ldap(
     'ldap/user_tree_dn':		value => "'${user_tree_dn}'";
     'ldap/user_objectclass':		value => 'person';
     'ldap/user_id_attribute':		value => 'cn';
-    'ldap/user_filter':   		value => '';
+    'ldap/user_filter':   		value => '(cn=svc*prd)';
     'ldap/user_name_attribute':		value => 'cn';
     'ldap/user_mail_attribute':		value => 'mail';
     'ldap/user_pass_attribute':		value => '';
@@ -77,5 +77,7 @@ class keystone::config::ldap(
     'ldap/user_enabled_attribute':	value => "'${user_enabled_attribute}'";
     'identity/driver':			value => $ldap_driver;
     'assignment/driver':		value => $assignment_driver;
+    'ldap/query_scope':     value => 'sub';
+    'ldap/page_size':       value => '1000';
   }
 }
