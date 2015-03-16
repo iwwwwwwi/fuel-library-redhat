@@ -32,17 +32,17 @@ class keystone::ldap(
 }
 
 class keystone::config::ldap(
-#  $url            = $::fuel_settings['keystone_ldap']['ldap_url'],
-#  $suffix         = $::fuel_settings['keystone_ldap']['ldap_suffix'],
-#  $user           = $::fuel_settings['keystone_ldap']['ldap_user'],
-#  $password       = $::fuel_settings['keystone_ldap']['ldap_pass'],
-#  $user_tree_dn   = $::fuel_settings['keystone_ldap']['ldap_user_tree_dn'],
+  $url            = $::fuel_settings['keystone_ldap']['ldap_url'],
+  $suffix         = $::fuel_settings['keystone_ldap']['ldap_suffix'],
+  $user           = $::fuel_settings['keystone_ldap']['ldap_user'],
+  $password       = $::fuel_settings['keystone_ldap']['ldap_pass'],
+  $user_tree_dn   = $::fuel_settings['keystone_ldap']['ldap_user_tree_dn'],
 
-  $url            = 'ldap://172.16.49.136',
-  $suffix         = 'dc=caponelab,dc=local',
-  $user           = 'cn=svcadmindev,ou=Engineering,dc=caponelab,dc=local', 
-  $password       = 'admin',
-  $user_tree_dn   = 'ou=Engineering,dc=caponelab,dc=local',
+#  $url            = 'ldap://172.16.49.136',
+#  $suffix         = 'dc=caponelab,dc=local',
+#  $user           = 'cn=svcadmindev,ou=Engineering,dc=caponelab,dc=local', 
+#  $password       = 'admin',
+#  $user_tree_dn   = 'ou=Engineering,dc=caponelab,dc=local',
 
   $user_enabled_attribute = 'userAccountControl',
   $ldap_driver    = 'keystone.identity.backends.ldap.Identity',
