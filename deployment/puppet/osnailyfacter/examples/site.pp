@@ -76,24 +76,19 @@ if $::fuel_settings['nodes'] {
     $public_int = get_network_role_property('ex', 'interface')
     $storage_int = get_network_role_property('storage', 'interface')
 
-    if $public_int {
-      $public_address = get_network_role_property('ex', 'ipaddr')
-      $public_netmask = get_network_role_property('ex', 'netmask')
-
-      if $::fuel_settings['role'] in ['ceph-mon', 'ceph-osd', 'primary-ceph-mon'] {
+    if $::fuel_settings['role'] in ['ceph-mon', 'ceph-osd', 'primary-ceph-mon'] {
         L23network::L3::Ifconfig<| title == $storage_int |> {
           default_gateway => true
         }
-        L23network::L3::Ifconfig<| title == $public_int |> {
-          default_gateway => undef
-        }
-      } else {
+    } elsif $public_int {
+      $public_address = get_network_role_property('ex', 'ipaddr')
+      $public_netmask = get_network_role_property('ex', 'netmask')
+
         # TODO(Xarses): remove this after completing merge of
         # multiple-cluster-networks
         L23network::L3::Ifconfig<| title == $public_int |> {
           default_gateway => true
-        }
-      }
+       }
     } else {
       # TODO(Xarses): remove this after completing merge of
       # multiple-cluster-networks
@@ -105,7 +100,8 @@ if $::fuel_settings['nodes'] {
     #
     $storage_address = get_network_role_property('storage', 'ipaddr')
     $storage_netmask = get_network_role_property('storage', 'netmask')
-  } else {
+
+    }  else {
     $internal_address = $node[0]['internal_address']
     $internal_netmask = $node[0]['internal_netmask']
     $public_address = $node[0]['public_address']
