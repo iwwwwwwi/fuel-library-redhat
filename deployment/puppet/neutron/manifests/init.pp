@@ -246,6 +246,7 @@ class neutron (
   $log_facility                = 'LOG_USER',
   $log_file                    = false,
   $log_dir                     = '/var/log/neutron',
+  $notification_topics         = 'notifications,monitoring',
 ) {
 
   include neutron::params
@@ -317,6 +318,7 @@ class neutron (
     'DEFAULT/rpc_backend':             value => $rpc_backend;
     'agent/root_helper':               value => $root_helper;
     'agent/report_interval':           value => $report_interval;
+    'DEFAULT/notification_topics':     value => $notification_topics;
   }
 
   if $log_file {

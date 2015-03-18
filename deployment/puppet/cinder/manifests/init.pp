@@ -73,6 +73,7 @@ class cinder (
   # DEPRECATED PARAMETERS
   $sql_connection              = undef,
   $sql_idle_timeout            = undef,
+  $notification_topics         = 'notifications,monitoring',
 ) {
 
   include cinder::params
@@ -132,6 +133,7 @@ class cinder (
       'DEFAULT/rabbit_virtual_host': value => $rabbit_virtual_host;
       'DEFAULT/control_exchange':    value => $control_exchange;
       'DEFAULT/amqp_durable_queues': value => $amqp_durable_queues;
+      'DEFAULT/notification_topics': value => $notification_topics;
     }
 
     if $rabbit_hosts {

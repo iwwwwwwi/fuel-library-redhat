@@ -110,6 +110,16 @@ class openstack::ceilometer (
       }
     }
 
+    file {'event_definitions.yaml':
+      path   => '/etc/ceilometer/event_definitions.yaml',
+      mode   => '0644',
+      owner  => ceilometer,
+      group  => ceilometer,
+      source => 'puppet:///modules/ceilometer/event_definitions.yaml',
+      require => Package['openstack-ceilometer-common'],
+      notify => Service['openstack-ceilometer-notification']
+    }
+
     if $ha_mode {
       $ceilometer_agent_res_name = "p_${::ceilometer::params::agent_central_service_name}"
 

@@ -40,7 +40,7 @@
 class ceilometer::agent::notification (
   $enabled            = true,
   $ack_on_event_error = true,
-  $store_events       = false
+  $store_events       = true
 ) {
 
   include ceilometer::params
