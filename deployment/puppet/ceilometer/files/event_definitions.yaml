@@ -7,6 +7,8 @@
       fields: payload.user_id
     instance_id:
       fields: payload.instance_id
+    instance_hostname:
+      fields: payload.hostname
     host:
       fields: publisher_id
       plugin:
@@ -96,7 +98,9 @@
       fields: payload.snapshot_id
     volume_id:
       fields: payload.volume_id
-- event_type: ['image.update', 'image.upload', 'image.delete']
+    volume_size:
+      fields: payload.volume_size
+- event_type: ['image.update', 'image.upload', 'image.delete', 'image.create']
   traits: &glance_crud
     project_id:
       fields: payload.owner
@@ -109,11 +113,19 @@
     created_at:
       fields: payload.created_at
     user_id:
-      fields: payload.owner
+      fields: payload.properties.user_id
     deleted_at:
       fields: payload.deleted_at
     size:
       fields: payload.size
+    instance_id:
+      fields: payload.properties.instance_uuid
+    vcpus:
+      fields: payload.properties.instance_type_vcpus
+    memory_mb:
+      fields: payload.properties.instance_type_memory_mb
+    image_type:
+      fields: payload.properties.image_type
 - event_type: image.send
   traits: &glance_send
     receiver_project:
