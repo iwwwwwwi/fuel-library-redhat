@@ -366,6 +366,7 @@ class neutron (
     if $rabbit_hosts {
       neutron_config { 'DEFAULT/rabbit_hosts':     value  => join($rabbit_hosts, ',') }
       neutron_config { 'DEFAULT/rabbit_ha_queues': value  => true }
+      neutron_config { 'DEFAULT/rabbit_heartbeat': value  => '86400' }
     } else  {
       neutron_config { 'DEFAULT/rabbit_host':      value => $rabbit_host }
       neutron_config { 'DEFAULT/rabbit_port':      value => $rabbit_port }
