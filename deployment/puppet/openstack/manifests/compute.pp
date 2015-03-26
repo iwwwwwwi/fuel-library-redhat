@@ -148,7 +148,18 @@ class openstack::compute (
 
   $final_sql_connection = $sql_connection
   $glance_connection = $glance_api_servers
-
+  package { 'patch': ensure => latest } -> 
+  file { '/tmp/nova.diff':
+    source => 'puppet:///modules/openstack/nova.diff',
+    ensure => present
+  } ~>
+  exec { 'nova_patch':
+    command => '/usr/bin/patch -p1 -d /usr/lib/python2.6/site-packages </tmp/nova.diff',
+    refreshonly => true,
+    require => Package["openstack-nova-compute"],
+    notify => Service["nova-compute"]
+  }
+  
   case $::osfamily {
     'RedHat': {
       augeas { 'sysconfig-libvirt':
