@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2013-07-10T21:17:07Z</date>
+    <date>2015-03-18T04:43:37Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -28,7 +28,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>net.tcp.service[http,,9191]</key>
+                    <key>net.tcp.service[http,{$IP_MANAGEMENT},9191]</key>
                     <delay>60</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -37,9 +37,12 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
+                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -76,9 +79,12 @@
                     <allowed_hosts/>
                     <units/>
                     <delta>0</delta>
+                    <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
                     <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
                     <formula>1</formula>
                     <delay_flex/>
@@ -119,7 +125,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template App OpenStack Glance Registry:net.tcp.service[http,,9191].last(0)}=0</expression>
+            <expression>{Template App OpenStack Glance Registry:net.tcp.service[http,{$IP_MANAGEMENT},9191].last(0)}=0</expression>
             <name>Glance Registry Server service is down on {HOST.NAME}</name>
             <url/>
             <status>0</status>
